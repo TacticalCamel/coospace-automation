@@ -2,6 +2,7 @@ import pwinput
 import pathlib
 import base64
 
+# interactively attempt to authenticate the user
 def auth_user(skip_load=False):
     # use the saved credentials, if any
     if not skip_load:
@@ -25,6 +26,7 @@ def auth_user(skip_load=False):
     # return the credentials
     return username, password
 
+# load credentials from a file in the user home directory
 def load_credentials():
     # get the home directory
     home = pathlib.Path.home()
@@ -40,6 +42,7 @@ def load_credentials():
     except Exception:
         return None, None
 
+# save credentials to a file in the user home directory
 def save_credentials(username, password):
     # get the home directory
     home = pathlib.Path.home()

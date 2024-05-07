@@ -1,9 +1,14 @@
 # Coospace automation
 
+A python selenium automation tool that implements common tasks on the [SZTE Coospace website](https://www.coosp.etr.u-szeged.hu/). 
+
 ## Setup
 TODO
 
 ## Usage
+TODO
+
+## Features
 TODO
 
 ## Scoring
