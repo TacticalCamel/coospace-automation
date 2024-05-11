@@ -2,6 +2,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
+from CalendarEvent import CalendarEvent
+from Notification import Notification
 from auth import auth_user
 from datetime import datetime
 
@@ -83,7 +85,7 @@ def fetch_calendar_events(browser):
     current_year = now.year
 
     # create an empty list to store the results
-    results = []
+    events = []
 
     while True:
         # navigate to the current month
@@ -93,20 +95,19 @@ def fetch_calendar_events(browser):
         wait.until(ec.presence_of_element_located((By.ID, 'calendar_main')))
 
         # get the events in the current month
-        events = browser.find_elements(By.CSS_SELECTOR, '.calendarentry')
+        event_elements = browser.find_elements(By.CSS_SELECTOR, '.calendarentry')
 
         # if there are no events, break the loop
-        if len(events) == 0:
+        if len(event_elements) == 0:
             break
 
         # fetch the events
-        for event in events:
+        for event_element in event_elements:
             try:
-
                 # find event properties
-                subject = event.find_element(By.CSS_SELECTOR, 'div:first-child').get_attribute('innerHTML')
-                title = event.find_element(By.CLASS_NAME, 'entryinfo1').get_attribute('innerHTML')
-                date = event.find_element(By.CLASS_NAME, 'entryinfo3').get_attribute('innerHTML')
+                subject = event_element.find_element(By.CSS_SELECTOR, 'div:first-child').get_attribute('innerHTML')
+                title = event_element.find_element(By.CLASS_NAME, 'entryinfo1').get_attribute('innerHTML')
+                date = event_element.find_element(By.CLASS_NAME, 'entryinfo3').get_attribute('innerHTML')
 
                 # format the date
                 date = datetime.strptime(date.split('-')[0].strip(), '%Y. %m. %d. %H:%M')
@@ -115,25 +116,29 @@ def fetch_calendar_events(browser):
                 if now > date:
                     continue
 
-                # add the event to the results
-                results.append({
-                    'subject': subject,
-                    'title': title,
-                    'date': datetime.strftime(date, '%Y.%m.%d. %H:%M'),
-                    'url': f'{COOSPACE_URL}/Calendar?currentDate={current_year}-{current_month:02d}-01&view=2'
-                })
+                # create a CalendarEvent object
+                event = CalendarEvent(
+                    subject=subject,
+                    title=title,
+                    date=date,
+                    url=f'{COOSPACE_URL}/Calendar?currentDate={current_year}-{current_month:02d}-01&view=2'
+                )
+
+                # add the event to the list
+                events.append(event)
 
             except Exception as e:
-                print('Could not parse event:', e)
+                print(f'Could not parse event, skipping: {e}')
 
-        # increase the month and year for the next iteration
+        # advance to the next month
         current_month += 1
 
         if current_month > 12:
             current_month = 1
             current_year += 1
 
-    return sorted(results, key=lambda x: x['date'])
+    # sort events by date
+    return sorted(events, key=lambda x: x.date)
 
 
 # display calendar events to the console in a readable format
@@ -148,10 +153,12 @@ def display_calendar_events(events):
     print(f'You have {len(events)} upcoming calendar events:')
 
     for event in events:
-        print(f'    {event["date"]}: {event["subject"]}')
-        print(f'    {event["title"]}')
-        print(f'    [{event["url"]}]')
+        if not isinstance(event, CalendarEvent):
+            continue
 
+        print(f'    {event.date}: {event.subject}')
+        print(f'    {event.title}')
+        print(f'    [{event.url}]')
         print()
 
 
@@ -161,34 +168,41 @@ def fetch_notifications(browser):
     browser.get(f'{COOSPACE_URL}/Events')
 
     # create an empty list to store the results
-    results = []
+    notifications = []
 
     # find notifications
-    events = browser.find_elements(By.CSS_SELECTOR, '.event-main')
+    notification_elements = browser.find_elements(By.CSS_SELECTOR, '.event-main')
 
     # fetch the notifications
-    for event in events:
+    for notification_element in notification_elements:
         try:
-            title = event.find_element(By.CSS_SELECTOR, '.event-header-sentence').text
-            date = event.find_element(By.CSS_SELECTOR, '.event-header-date > span').get_attribute('innerHTML')
-            scene = event.find_element(By.CSS_SELECTOR, '.scene').get_attribute('innerHTML')
-            tool = event.find_element(By.CSS_SELECTOR, '.tool').get_attribute('innerHTML')
-            url = event.get_attribute('data-url')
+            # find notification properties
+            title = notification_element.find_element(By.CSS_SELECTOR, '.event-header-sentence').text
+            date = notification_element.find_element(By.CSS_SELECTOR, '.event-header-date > span').get_attribute(
+                'innerHTML')
+            scene = notification_element.find_element(By.CSS_SELECTOR, '.scene').get_attribute('innerHTML')
+            tool = notification_element.find_element(By.CSS_SELECTOR, '.tool').get_attribute('innerHTML')
+            url = notification_element.get_attribute('data-url')
 
             date = datetime.strptime(date, '%Y. %m. %d. %H:%M')
 
-            results.append({
-                'title': title,
-                'date': datetime.strftime(date, '%Y.%m.%d. %H:%M'),
-                'scene': scene,
-                'tool': tool,
-                'url': f'{COOSPACE_URL}{url}'
-            })
+            # create a Notification object
+            notification = Notification(
+                title=title,
+                date=date,
+                scene=scene,
+                tool=tool,
+                url=url
+            )
+
+            # add the notification to the list
+            notifications.append(notification)
 
         except Exception as e:
-            print('Could not parse notification:', e)
+            print(f'Could not parse notification, skipping: {e}')
 
-    return sorted(results, key=lambda x: x['date'], reverse=True)
+    # sort notifications by date from newest to oldest
+    return sorted(notifications, key=lambda x: x.date, reverse=True)
 
 
 # display notifications to the console in a readable format
@@ -203,13 +217,16 @@ def display_notifications(notifications):
     print(f'You have {len(notifications)} new notifications:')
 
     for notification in notifications:
-        print(f'    {notification["date"]}: {notification["title"]}')
-        print(f'    {notification["scene"]} - {notification["tool"]}')
-        print(f'    [{notification["url"]}]')
+        if not isinstance(notification, Notification):
+            continue
+
+        print(f'    {notification.date}: {notification.title}')
+        print(f'    {notification.scene} - {notification.tool}')
+        print(f'    [{notification.url}]')
         print()
 
 
-# download a file from the personal folder
+# download a file from the personal folder to the default download directory
 def download_file(browser, coospace_path):
     # create a wait object with a timeout of 5 seconds
     wait = WebDriverWait(browser, 5)
@@ -221,13 +238,13 @@ def download_file(browser, coospace_path):
     folder_name = coospace_path[:split_index]
     file_name = coospace_path[split_index + 1:]
 
-    # navigate to the folder
-    browser.get(f'{COOSPACE_URL}/My/Folder/Index/{folder_name}')
-
-    # wait for the page to load
-    wait.until(ec.presence_of_element_located((By.ID, 'items')))
-
     try:
+        # navigate to the folder
+        browser.get(f'{COOSPACE_URL}/My/Folder/Index/{folder_name}')
+
+        # wait for the page to load
+        wait.until(ec.presence_of_element_located((By.ID, 'items')))
+
         # find the file by its name
         file_link = browser.find_element(By.XPATH, f'//a[text()=\'{file_name}\']')
 

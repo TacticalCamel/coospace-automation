@@ -5,6 +5,7 @@ import base64
 # path to the file where the credentials are saved
 credentials_file_path = pathlib.Path.home() / '.coospace-credentials'
 
+
 # interactively attempt to authenticate the user
 def auth_user(skip_load=False):
     # use the saved credentials, if any
@@ -29,6 +30,7 @@ def auth_user(skip_load=False):
     # return the credentials
     return username, password
 
+
 # load credentials from a file in the user home directory
 def load_credentials():
     # try to open the file
@@ -42,6 +44,7 @@ def load_credentials():
     except Exception:
         return None, None
 
+
 # save credentials to a file in the user home directory
 def save_credentials(username, password):
     # try to open the file
@@ -50,5 +53,6 @@ def save_credentials(username, password):
             # write the username and password to the file
             file.write(username + '\n')
             file.write(base64.b64encode(password.encode()).decode() + '\n')
+
     except Exception:
         print('Could not save credentials to file.')

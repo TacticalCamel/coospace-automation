@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='coospace-automation',
+    name='coospace_automation',
     version='0.1',
     packages=['coospace_automation'],
     url='https://github.com/TacticalCamel/coospace-automation',

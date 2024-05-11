@@ -1,5 +1,5 @@
 from selenium import webdriver
-from coospace_automation import coospace
+import coospace
 
 # create an options object
 options = webdriver.ChromeOptions()
