@@ -1,11 +1,11 @@
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-
-from CalendarEvent import CalendarEvent
-from Notification import Notification
-from auth import auth_user
 from datetime import datetime
+
+from coospace_automation.calendar import CalendarEvent
+from coospace_automation.notification import Notification
+from coospace_automation.auth import auth_user
 
 # the url of the root page
 COOSPACE_URL = 'https://www.coosp.etr.u-szeged.hu'

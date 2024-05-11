@@ -1,9 +1,9 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='coospace_automation',
-    version='0.1',
-    packages=['coospace_automation'],
+    version='0.2.2',
+    packages=find_packages(exclude=['tests']),
     url='https://github.com/TacticalCamel/coospace-automation',
     license='',
     author='Takács Balázs',

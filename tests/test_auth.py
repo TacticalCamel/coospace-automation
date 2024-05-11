@@ -1,8 +1,7 @@
 import unittest
 import mock
 
-import auth
-
+from coospace_automation import auth
 
 class TestAuth(unittest.TestCase):
     username = 'test.user'
