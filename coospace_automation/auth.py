@@ -55,4 +55,9 @@ def save_credentials(username, password):
             file.write(base64.b64encode(password.encode()).decode() + '\n')
 
     except Exception:
+        # remove the file
+        if credentials_file_path.exists():
+            credentials_file_path.unlink()
+
+        # print an error message
         print('Could not save credentials to file.')

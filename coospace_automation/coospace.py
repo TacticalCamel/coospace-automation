@@ -121,7 +121,7 @@ def fetch_calendar_events(browser):
                     subject=subject,
                     title=title,
                     date=date,
-                    url=f'{COOSPACE_URL}/Calendar?currentDate={current_year}-{current_month:02d}-01&view=2'
+                    url=f'{COOSPACE_URL}/Calendar?currentDate={date.year}-{date.month:02d}-{date.day:02d}&view=2'
                 )
 
                 # add the event to the list
@@ -178,8 +178,7 @@ def fetch_notifications(browser):
         try:
             # find notification properties
             title = notification_element.find_element(By.CSS_SELECTOR, '.event-header-sentence').text
-            date = notification_element.find_element(By.CSS_SELECTOR, '.event-header-date > span').get_attribute(
-                'innerHTML')
+            date = notification_element.find_element(By.CSS_SELECTOR, '.event-header-date > span').get_attribute('innerHTML')
             scene = notification_element.find_element(By.CSS_SELECTOR, '.scene').get_attribute('innerHTML')
             tool = notification_element.find_element(By.CSS_SELECTOR, '.tool').get_attribute('innerHTML')
             url = notification_element.get_attribute('data-url')
@@ -192,7 +191,7 @@ def fetch_notifications(browser):
                 date=date,
                 scene=scene,
                 tool=tool,
-                url=url
+                url=f'{COOSPACE_URL}{url}'
             )
 
             # add the notification to the list

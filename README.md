@@ -6,7 +6,8 @@
 TODO
 
 ## Usage
-TODO
+
+Run tests with: `pytest .\tests\test_auth.py --cov=auth`
 
 ## Features
 
