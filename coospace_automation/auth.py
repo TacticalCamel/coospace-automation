@@ -2,6 +2,9 @@ import pwinput
 import pathlib
 import base64
 
+# path to the file where the credentials are saved
+credentials_file_path = pathlib.Path.home() / '.coospace-credentials'
+
 # interactively attempt to authenticate the user
 def auth_user(skip_load=False):
     # use the saved credentials, if any
@@ -28,12 +31,9 @@ def auth_user(skip_load=False):
 
 # load credentials from a file in the user home directory
 def load_credentials():
-    # get the home directory
-    home = pathlib.Path.home()
-
     # try to open the file
     try:
-        with open(home / '.coospace-credentials', 'r') as file:
+        with open(credentials_file_path, 'r') as file:
             # read the username and password from the file
             username = file.readline().strip()
             password = base64.b64decode(file.readline().strip()).decode()
@@ -44,12 +44,9 @@ def load_credentials():
 
 # save credentials to a file in the user home directory
 def save_credentials(username, password):
-    # get the home directory
-    home = pathlib.Path.home()
-
     # try to open the file
     try:
-        with open(home / '.coospace-credentials', 'w') as file:
+        with open(credentials_file_path, 'w') as file:
             # write the username and password to the file
             file.write(username + '\n')
             file.write(base64.b64encode(password.encode()).decode() + '\n')

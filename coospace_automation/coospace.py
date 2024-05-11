@@ -136,8 +136,8 @@ def fetch_calendar_events(browser):
     return sorted(results, key=lambda x: x['date'])
 
 
-# print a list of calendar events to the console in a readable format
-def print_calendar_events(events):
+# display calendar events to the console in a readable format
+def display_calendar_events(events):
     print()
 
     if len(events) == 0:
@@ -191,8 +191,8 @@ def fetch_notifications(browser):
     return sorted(results, key=lambda x: x['date'], reverse=True)
 
 
-# print a list of notifications to the console in a readable format
-def print_notifications(notifications):
+# display notifications to the console in a readable format
+def display_notifications(notifications):
     print()
 
     if len(notifications) == 0:
@@ -207,3 +207,35 @@ def print_notifications(notifications):
         print(f'    {notification["scene"]} - {notification["tool"]}')
         print(f'    [{notification["url"]}]')
         print()
+
+
+# download a file from the personal folder
+def download_file(browser, coospace_path):
+    # create a wait object with a timeout of 5 seconds
+    wait = WebDriverWait(browser, 5)
+
+    # the index of the last slash in the file path
+    split_index = coospace_path.rfind('/')
+
+    # get the folder name and the file name
+    folder_name = coospace_path[:split_index]
+    file_name = coospace_path[split_index + 1:]
+
+    # navigate to the folder
+    browser.get(f'{COOSPACE_URL}/My/Folder/Index/{folder_name}')
+
+    # wait for the page to load
+    wait.until(ec.presence_of_element_located((By.ID, 'items')))
+
+    try:
+        # find the file by its name
+        file_link = browser.find_element(By.XPATH, f'//a[text()=\'{file_name}\']')
+
+        # get the url of the file
+        url = file_link.get_attribute("href")
+
+        # download the file
+        browser.get(url)
+
+    except:
+        print(f'Could not locate file "{coospace_path}"')

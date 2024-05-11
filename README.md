@@ -1,6 +1,6 @@
 # Coospace automation
 
-A python selenium automation tool that implements common tasks on the [SZTE Coospace website](https://www.coosp.etr.u-szeged.hu/). 
+#### A simple automation tool that uses python and selenium to automate common actions on the [SZTE Coospace website](https://www.coosp.etr.u-szeged.hu/). 
 
 ## Setup
 TODO
@@ -9,7 +9,14 @@ TODO
 TODO
 
 ## Features
-TODO
+
+- Login with valid credentials
+
+- List or display upcoming calendar events
+
+- List or display new notifications
+
+- Download or upload files to personal storage
 
 ## Scoring
 
