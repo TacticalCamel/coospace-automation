@@ -66,7 +66,7 @@ class TestAuth(unittest.TestCase):
 
     @mock.patch("builtins.input", return_value=username)
     @mock.patch("pwinput.pwinput", return_value=pwd)
-    def test_auth_user_without_save(self, mock_input, mock_pwinput):
+    def test_auth_user_without_save(self, _, __):
         if auth.credentials_file_path.exists():
             # remove the credentials file
             auth.credentials_file_path.unlink()

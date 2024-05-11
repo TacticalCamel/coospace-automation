@@ -1,0 +1,15 @@
+[build-system]
+name = "coospace_automation"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+version = "0.1"
+readme = "README.md"
+requires-python = ">=3.6"
+authors = [
+    {name = "TacticalCamel", email = "takacsbalazsg@gmail.com"}
+]
+description = "A simple automation tool that uses python and selenium to automate common actions on the SZTE Coospace website"
+
+[project.urls]
+Homepage = "https://github.com/TacticalCamel/coospace-automation"
+Issues = "https://github.com/TacticalCamel/coospace-automation/issues"

@@ -12,8 +12,10 @@ setup(
     python_requires='>=3.6',
     install_requires=[
         'selenium',
-        'pwinput',
+        'pwinput'
+    ],
+    tests_require=[
         'mock',
-        'pytest',
+        'pytest'
     ]
 )
