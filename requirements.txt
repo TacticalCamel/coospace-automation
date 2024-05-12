@@ -1,2 +1,3 @@
-pwinput
-selenium
+selenium>=4.20.0
+pwinput>=1.0.3
+mock~=5.1.0

@@ -174,14 +174,14 @@ def fetch_notifications(browser):
     notification_elements = browser.find_elements(By.CSS_SELECTOR, '.event-main')
 
     # fetch the notifications
-    for notification_element in notification_elements:
+    for n in notification_elements:
         try:
             # find notification properties
-            title = notification_element.find_element(By.CSS_SELECTOR, '.event-header-sentence').text
-            date = notification_element.find_element(By.CSS_SELECTOR, '.event-header-date > span').get_attribute('innerHTML')
-            scene = notification_element.find_element(By.CSS_SELECTOR, '.scene').get_attribute('innerHTML')
-            tool = notification_element.find_element(By.CSS_SELECTOR, '.tool').get_attribute('innerHTML')
-            url = notification_element.get_attribute('data-url')
+            title = n.find_element(By.CSS_SELECTOR, '.event-header-sentence').text
+            date = n.find_element(By.CSS_SELECTOR, '.event-header-date > span').get_attribute('innerHTML')
+            scene = n.find_element(By.CSS_SELECTOR, '.scene').get_attribute('innerHTML')
+            tool = n.find_element(By.CSS_SELECTOR, '.tool').get_attribute('innerHTML')
+            url = n.get_attribute('data-url')
 
             date = datetime.strptime(date, '%Y. %m. %d. %H:%M')
 

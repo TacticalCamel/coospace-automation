@@ -3,10 +3,24 @@ import mock
 
 from coospace_automation import auth
 
-class TestAuth(unittest.TestCase):
-    username = 'test.user'
-    pwd = 'test.pwd'
 
+# tests for the auth module
+class TestAuth(unittest.TestCase):
+    # test username and password
+    username = 'TestUsername'
+    pwd = 'TestPwd123'
+
+    # remove the credentials file before a test is run, if it exists
+    def setUp(self):
+        if auth.credentials_file_path.exists():
+            auth.credentials_file_path.unlink()
+
+    # remove the credentials file after a test is run, if it exists
+    def tearDown(self):
+        if auth.credentials_file_path.exists():
+            auth.credentials_file_path.unlink()
+
+    # test saving then loading the credentials
     def test_save_then_load(self):
         # tests data
         # save the credentials
@@ -22,11 +36,8 @@ class TestAuth(unittest.TestCase):
         # remove the credentials file
         auth.credentials_file_path.unlink()
 
+    # test loading the credentials when there is no credentials file
     def test_load_none(self):
-        if auth.credentials_file_path.exists():
-            # remove the credentials file
-            auth.credentials_file_path.unlink()
-
         # load the credentials
         loaded_username, loaded_password = auth.load_credentials()
 
@@ -34,17 +45,15 @@ class TestAuth(unittest.TestCase):
         self.assertIsNone(loaded_username)
         self.assertIsNone(loaded_password)
 
+    # test saving the credentials with incorrect parameters
     def test_save_error(self):
-        if auth.credentials_file_path.exists():
-            # remove the credentials file
-            auth.credentials_file_path.unlink()
-
         # attempt to save the credentials
         auth.save_credentials(1, 3233)
 
         # check that the credentials file does not exist
         self.assertFalse(auth.credentials_file_path.exists())
 
+    # test authenticating the user by loading saved credentials
     def test_auth_user_with_save(self):
         # test data
         username = 'test.user'
@@ -60,16 +69,10 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(loaded_username, username)
         self.assertEqual(loaded_password, password)
 
-        # remove the credentials file
-        auth.credentials_file_path.unlink()
-
+    # test authenticating the user by manually entering the credentials
     @mock.patch("builtins.input", return_value=username)
     @mock.patch("pwinput.pwinput", return_value=pwd)
     def test_auth_user_without_save(self, _, __):
-        if auth.credentials_file_path.exists():
-            # remove the credentials file
-            auth.credentials_file_path.unlink()
-
         # authenticate the user
         loaded_username, loaded_password = auth.auth_user()
 
