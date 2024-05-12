@@ -1,3 +1,5 @@
+import time
+
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -252,6 +254,9 @@ def download_file(browser, coospace_path):
 
         # download the file
         browser.get(url)
+
+        # wait for the file to download
+        time.sleep(1)
 
     except:
         print(f'Could not locate file "{coospace_path}"')
